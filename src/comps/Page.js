@@ -3,11 +3,11 @@ import { CardElement, injectStripe } from 'react-stripe-elements';
 
 class Page extends Component {
 
+    openMenu(){}
+
     render() {
         return (
-            <div id="list">
-                <button name="Java"/>
-                
+            <div id="main">
             </div>
         );
     }

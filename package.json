@@ -2,7 +2,7 @@
   "name": "website",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://grayhat12.github.io/compilor/",
+  "homepage": "https://grayhat12.github.io/compiler/",
   "dependencies": {
     "gh-pages": "^2.1.1",
     "react": "^16.9.0",
