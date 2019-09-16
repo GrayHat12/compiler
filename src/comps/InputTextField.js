@@ -64,7 +64,7 @@ const BootstrapInput = withStyles(theme => ({
 }))(InputBase);
 
 
-const useStyles = makeStyles(theme => ({
+const useStylesS = makeStyles(theme => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -83,7 +83,7 @@ const theme = createMuiTheme({
 });
 
 export default function ProductInput1() {
-  const classes = useStyles();
+  const classes = useStylesS();
 
   return (
     <form className={classes.root} noValidate >
@@ -91,6 +91,7 @@ export default function ProductInput1() {
       <CssTextField 
         className={classes.margin}
         label="Input"
+        multiline
         fullWidth
         margin="normal"
         variant="outlined"

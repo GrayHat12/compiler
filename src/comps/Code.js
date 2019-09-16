@@ -83,13 +83,13 @@ const theme = createMuiTheme({
   },
 });
 
-export default function Code() {
+export default function Code(props) {
   const classes = useStyles();
 
 
   const [values, setValues] = React.useState({
   
-    multiline: '</>',
+    multiline: props.language,
    
   });
   

@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import FILE from "./FILE.js";
 import Drawer from "./Drawer.js";
 import "./styles.css";
 

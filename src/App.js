@@ -1,10 +1,10 @@
 import React from 'react';
 import Page from './comps/Page';
-import Drawer from './comps/Drawer';
+import Drawerr from './comps/Drawer';
 
 function App() {
   return (
-    <Drawer key="key0"/>
+    <Drawerr key="key0"/>
   );
 }
 
