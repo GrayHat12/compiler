@@ -1,5 +1,4 @@
 import React from 'react';
-import Page from './comps/Page';
 import Drawerr from './comps/Drawer';
 
 function App() {
