@@ -9,7 +9,7 @@
 /coverage
 
 # production
-/fbase.js
+/.fbase.js
 /build
 
 # misc
