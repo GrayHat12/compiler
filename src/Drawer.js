@@ -20,6 +20,7 @@ import clsx from 'clsx';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 import SendIcon from '@material-ui/icons/Send';
+import ShareIcon from '@material-ui/icons/Share';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { withStyles } from '@material-ui/core/styles';
@@ -28,10 +29,9 @@ import HideOnScroll from "./HideOnScroll";
 import Sid from "./Contibuters/Sid"
 import Rahul from "./Contibuters/Rahul"
 import Footer from "./Footer";
-import database from './fbase';
+import database from './fbase.js';
 
 var request = require('request');
-
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
   root: {
@@ -82,23 +82,80 @@ const useStyles = makeStyles(theme => ({
 
 function ResponsiveDrawer(props) {
 
+  var initcurLang=7;
+  var initlanguage = "Python3";
+  var initCode = "print(\"Hello World\")";
+  var inithelper = "OUTPUT HERE";
+  var initInput = "";
+  var initOutput="";
+  const langList = [
+    "C (GCC 6.3)",
+    "C++14 (GCC 6.3)",
+    "C# (GMCS 4.6.2)",
+    "Java (HotSpot 8u112)",
+    "Perl (5.24.1)",
+    "PHP (7.1.0)",
+    "Python (Cpython 2.7.13)",
+    "Python3 (Python 3.6)",
+    "Scala (Scala 2.12.1)",
+    "Ruby (Ruby 2.3.3)",
+    "NODEJS (Node 7.4.0)",
+    "GO (GO 1.7.4)",
+    "BASH (Bash 4.4.5)",
+    "RUST (Rust 1.14.0)"
+  ];
   const { container } = props;
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [language, setLanguage] = React.useState("Python3");
-  const [code, setCode] = React.useState("print(\"Hello World\")");
-  const [input, setInput] = React.useState("");
-  const [output, setOutput] = React.useState("");
+  const [language, setLanguage] = React.useState(initlanguage);
+  const [code, setCode] = React.useState(initCode);
+  const [input, setInput] = React.useState(initInput);
+  const [output, setOutput] = React.useState(initOutput);
   const [inputAllowed , setInputPermission] = React.useState(false);
   const url = 'https://www.codechef.com/api/ide/run/all';
   const langCode=[11,44,27,10,3,29,4,116,39,17,56,114,28,93];
-  const [curLang , setCurLang] = React.useState(7);
-  const [helperOut , changeHelperOut] = React.useState("OUTPUT HERE");
+  const [curLang , setCurLang] = React.useState(initcurLang);
+  const [helperOut , changeHelperOut] = React.useState(inithelper);
+  const [shared,setShared] = React.useState("");
   var tcode=code;
   var tinput=input;
   const [lastRun, setLastRun] = React.useState(0);
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+  React.useEffect(()=>{
+    if(window.location.href.includes('?shared='))
+  {
+    var tstamp = window.location.href.substring(window.location.href.indexOf('?shared=')+'?shared='.length);
+    //console.log(tstamp);
+    database.child(tstamp).once('value',(snap)=>{
+      if(snap.exists());
+      else
+      {
+        alert('INVALID SHARE URL');
+        return;
+      }
+      var nsnap = snap.val();
+      //console.log(nsnap);
+      setLanguage(nsnap.codeLang);
+      //console.log(nsnap.codeLang);
+      setCurLang(Number(nsnap.lang));
+      //console.log(Number(nsnap.lang));
+      setCode(decodeURI(nsnap.code));
+      //console.log(decodeURI(nsnap.code));
+      changeHelperOut(decodeURI(nsnap.helper));
+      //console.log(decodeURI(nsnap.helper));
+      setInput(decodeURI(nsnap.input));
+      //console.log(decodeURI(nsnap.input));
+      setOutput(decodeURI(nsnap.output));
+      //console.log(decodeURI(nsnap.output));
+      setLoading(false);
+    });
+  }
+  else
+  {
+    setLoading(false);
+  }
+  },[]);
 
 //Loader.js
 const ColorCircularProgress = withStyles({
@@ -218,7 +275,7 @@ function CustomizedProgressBars() {
         setLoading(true);
         var options = {
           method: 'POST',
-          url: 'https://cors-anywhere.herokuapp.com/'+url,
+          url: 'https://cors-grayhat.herokuapp.com/'+url,
           headers : {
             'Origin': 'https://www.codechef.com'
           },
@@ -242,7 +299,7 @@ function CustomizedProgressBars() {
         {
           var Noptions = {
             method: 'GET',
-            url: 'https://cors-anywhere.herokuapp.com/'+url,
+            url: 'https://cors-grayhat.herokuapp.com/'+url,
             headers : {
               'Origin': 'https://www.codechef.com'
             },
@@ -250,11 +307,12 @@ function CustomizedProgressBars() {
           }
           request(Noptions,(errorr,responses,bodyy)=>
         {
-          if(errorr){alert("Server error in FetchCode");return;}
+          if(errorr){alert("Server error in FetchCode");
+          cond=true;return;}
           var respp=JSON.parse(bodyy);
           var status=respp.status;
           var codestatus = respp.code_status;
-          if(codestatus === "0" && status === "OK")
+          if(codestatus == "0" && status == "OK")
           {
             cond=true;
             var meta=
@@ -289,8 +347,27 @@ function CustomizedProgressBars() {
           }
         });
       }
-      codeCompile = setInterval(FetchCode,1000);
+      codeCompile = setInterval(FetchCode,2000);
     });
+      }
+      function handleShare()
+      {
+        var stamp=Date.now();
+        var cde=encodeURI(code);
+        var inppt=encodeURI(input);
+        var ot=encodeURI(output);
+        var helout = encodeURI(helperOut);
+        var p=`{"${stamp}" : {"code" : "${cde}","input" : "${inppt}","output" : "${ot}","helper" : "${helout}", "lang" : "${curLang}", "codeLang" : "${language}"}}`;
+        //console.log(p);
+        var q=JSON.parse(p);
+        database.update(q,(a)=>{
+          if(a)
+          {
+            alert("Some Error Occured");
+            return;
+          }
+          setShared("https://grayhat12.github.io/compiler?shared="+stamp);
+        });
       }
       const classes = useStylesFun();
       return (
@@ -298,6 +375,10 @@ function CustomizedProgressBars() {
           <Button variant="contained" color="primary" className={classes.button} onClick={handleCompile}>
             COMPILE AND RUN &nbsp;  &nbsp;
             <SendIcon className={clsx(classes.RightIcon, classes.iconSmall)} />
+          </Button>
+          <Button variant="contained" color="primary" className={classes.button} onClick={handleShare}>
+            SAVE-SHARE &nbsp;  &nbsp;
+            <ShareIcon className={clsx(classes.RightIcon, classes.iconSmall)} />
           </Button>
     &nbsp; &nbsp;&nbsp;
           <FormControlLabel
@@ -311,6 +392,8 @@ function CustomizedProgressBars() {
             }
             label="Input Field"
           />
+          <p></p>
+          <a target="_blank" rel="nofollow" href={shared}>{shared}</a>
         </div>
       );
     }
@@ -503,7 +586,7 @@ function CustomizedProgressBars() {
       setCode("using System;\nnamespace HelloWorldApp {\n\tclass Gray {\n\t\tstatic void Main(string[] args) {\n\t\t\tConsole.WriteLine(\"Hello World!\");\n\t\t\tConsole.ReadKey();\n\t\t}\n\t}\n}");
     }
     else if (text == "Java (HotSpot 8u112)") {
-      setCode("public class Main{\n\tpublic static void main(String args[]){\n\t\tSystem.out.println(\"Hello World\");\n\t}\n}");
+      setCode("//file will be saved as Main.java. Name main class accordingly\npublic class Main{\n\tpublic static void main(String args[]){\n\t\tSystem.out.println(\"Hello World\");\n\t}\n}");
     }
     else if (text == "Perl (5.24.1)") {
       setCode("use strict;\nuse warnings;\nprint(\"Hello World\\n\");");
@@ -546,22 +629,7 @@ function CustomizedProgressBars() {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        {[
-          "C (GCC 6.3)",
-          "C++14 (GCC 6.3)",
-          "C# (GMCS 4.6.2)",
-          "Java (HotSpot 8u112)",
-          "Perl (5.24.1)",
-          "PHP (7.1.0)",
-          "Python (Cpython 2.7.13)",
-          "Python3 (Python 3.6)",
-          "Scala (Scala 2.12.1)",
-          "Ruby (Ruby 2.3.3)",
-          "NODEJS (Node 7.4.0)",
-          "GO (GO 1.7.4)",
-          "BASH (Bash 4.4.5)",
-          "RUST (Rust 1.14.0)"
-        ].map((text, index) => (
+        {langList.map((text, index) => (
           <ListItem onClick={() => handleLanguageToogle(text,index)} button key={text} style={{ color: 'White' }}>
             <ListItemIcon>
               {<img src={require(`./newIcons/${text.split(' ')[0]}.png`)} width="25" height="25" alt={text} />}
@@ -622,7 +690,7 @@ function CustomizedProgressBars() {
             <Drawer
               container={container}
               variant="temporary"
-              anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+              anchor={theme.direction == 'rtl' ? 'right' : 'left'}
               open={mobileOpen}
               onClose={handleDrawerToggle}
               classes={{

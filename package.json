@@ -6,6 +6,7 @@
   "dependencies": {
     "@material-ui/core": "^4.4.0",
     "@material-ui/icons": "^4.2.1",
+    "firebase": "^6.6.2",
     "gh-pages": "^2.1.1",
     "highlight.js": "^9.15.10",
     "react": "^16.9.0",
