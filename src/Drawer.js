@@ -27,7 +27,8 @@ import BARBG from "./Images/BARBG.jpg"
 import HideOnScroll from "./HideOnScroll";
 import Sid from "./Contibuters/Sid"
 import Rahul from "./Contibuters/Rahul"
-import Footer from "./Footer"
+import Footer from "./Footer";
+import database from './fbase';
 
 var request = require('request');
 
@@ -139,7 +140,6 @@ function CustomizedProgressBars() {
         flexWrap: 'wrap',
       },
       margin: {
-       
         margin: theme.spacing(1),
       },
     }));
@@ -160,14 +160,13 @@ function CustomizedProgressBars() {
       }
     
       return (
-        <form className={classes.root} noValidate>
+        <form className={classes.root} noValidate >
         <TextField
-        
-        className={classes.margin}
         id="outlined-multiline-flexible"
         label="Code"
         multiline
         rowsMax="500"
+        InputLabelProps={{ shrink: true }}
         fullWidth
         value={values.multiline}
         onChange={editCode}
@@ -255,7 +254,7 @@ function CustomizedProgressBars() {
           var respp=JSON.parse(bodyy);
           var status=respp.status;
           var codestatus = respp.code_status;
-          if(codestatus == "0" && status == "OK")
+          if(codestatus === "0" && status === "OK")
           {
             cond=true;
             var meta=
@@ -320,8 +319,8 @@ function CustomizedProgressBars() {
   
     return (
       <div >
-        <Paper className={classes.root} style={{backgroundColor:"#f5f5f5"}}>
-          <Typography variant="h5" component="h3" style={{color: 'Black'}}>
+        <Paper className={classes.root} style={{backgroundColor:"WHITE",opacity:"0.7" }}>
+          <Typography variant="h5" component="h3" style={{color: 'BLACK'}}>
            {language.toUpperCase()} Code Here  
   <br/>
            <FunButtons/>
@@ -384,6 +383,7 @@ function CustomizedProgressBars() {
         <form className={classes.root} noValidate>
          
           <CssTextFieldOR
+            InputLabelProps={{ shrink: true }}
             className={classes.margin}
             label="Output"
             multiline
@@ -452,6 +452,7 @@ function CustomizedProgressBars() {
           <CssTextFieldOutput 
             className={classes.margin}
             label="Input"
+            InputLabelProps={{ shrink: true }}
             onChange={handleInputChange}
             multiline
             value = {values.multiline}
@@ -468,8 +469,8 @@ function CustomizedProgressBars() {
   
     return (
       <div>
-        <Paper className={classes.root} style={{backgroundColor:"#f5f5f5"}}>
-          <Typography variant="h5" component="h3" style={{color: 'Black'}}>
+        <Paper className={classes.root} style={{backgroundColor:"WHITE",opacity:"0.7"}}>
+          <Typography variant="h5" component="h3" style={{color: 'BLACK'}}>
   
            COMPILATION AND RUNTIME SCREEN
            
@@ -563,7 +564,7 @@ function CustomizedProgressBars() {
         ].map((text, index) => (
           <ListItem onClick={() => handleLanguageToogle(text,index)} button key={text} style={{ color: 'White' }}>
             <ListItemIcon>
-              {<img src={require(`./newIcons/${text.split(' ')[0]}.png`)} width="25" height="25" />}
+              {<img src={require(`./newIcons/${text.split(' ')[0]}.png`)} width="25" height="25" alt={text} />}
             </ListItemIcon>
             <ListItemText primary={text} />
           </ListItem>
@@ -577,7 +578,6 @@ function CustomizedProgressBars() {
 
             {<a href={(index == 0) ? "https://github.com/Sidm9" : "https://github.com/GrayHat12"}>{text}</a>}
             <ListItemText primary={""} />
-
           </ListItem>
         ))}
       </List>
