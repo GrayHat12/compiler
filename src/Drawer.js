@@ -125,7 +125,9 @@ function ResponsiveDrawer(props) {
   React.useEffect(()=>{
     if(window.location.href.includes('?shared='))
   {
-    var tstamp = window.location.href.substring(window.location.href.indexOf('?shared=')+'?shared='.length);
+    var tstamp = window.location.href
+    .substring(window.location.href
+      .indexOf('?shared=')+'?shared='.length);
     //console.log(tstamp);
     database.child(tstamp).once('value',(snap)=>{
       if(snap.exists());
@@ -357,7 +359,7 @@ function CustomizedProgressBars() {
         var inppt=encodeURI(input);
         var ot=encodeURI(output);
         var helout = encodeURI(helperOut);
-        var p=`{"${stamp}" : {"code" : "${cde}","input" : "${inppt}","output" : "${ot}","helper" : "${helout}", "lang" : "${curLang}", "codeLang" : "${language}"}}`;
+        var p=`{"${stamp}" : {"code" : "${cde}","input" : "${inppt}","output" : "${ot}","helper" : "${helout}", "lang" : "${curLang}", "codeLang" : "${language}", "created" : "${new Date()}"}}`;
         //console.log(p);
         var q=JSON.parse(p);
         database.update(q,(a)=>{
