@@ -404,7 +404,7 @@ function CustomizedProgressBars() {
   
     return (
       <div >
-        <Paper className={classes.root} style={{backgroundColor:"WHITE",opacity:"0.7" }}>
+        <Paper className={classes.root} style={{backgroundColor:"WHITE" }}>
           <Typography variant="h5" component="h3" style={{color: 'BLACK'}}>
            {language.toUpperCase()} Code Here  
   <br/>
@@ -554,7 +554,7 @@ function CustomizedProgressBars() {
   
     return (
       <div>
-        <Paper className={classes.root} style={{backgroundColor:"WHITE",opacity:"0.7"}}>
+        <Paper className={classes.root} style={{backgroundColor:"WHITE"}}>
           <Typography variant="h5" component="h3" style={{color: 'BLACK'}}>
   
            COMPILATION AND RUNTIME SCREEN
