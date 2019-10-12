@@ -82,7 +82,7 @@ const useStyles = makeStyles(theme => ({
 
 function ResponsiveDrawer(props) {
 
-  var initcurLang=7;
+  var initcurLang=8;
   var initlanguage = "Python3";
   var initCode = "print(\"Hello World\")";
   var inithelper = "OUTPUT HERE";
@@ -92,18 +92,20 @@ function ResponsiveDrawer(props) {
     "C (GCC 6.3)",
     "C++14 (GCC 6.3)",
     "C# (GMCS 4.6.2)",
+/*x*/"C++",
     "Java (HotSpot 8u112)",
     "Perl (5.24.1)",
     "PHP (7.1.0)",
     "Python (Cpython 2.7.13)",
     "Python3 (Python 3.6)",
-    "Scala (Scala 2.12.1)",
-    "Ruby (Ruby 2.3.3)",
-    "NODEJS (Node 7.4.0)",
-    "GO (GO 1.7.4)",
-    "BASH (Bash 4.4.5)",
-    "RUST (Rust 1.14.0)"
+    "Scala (Scala 2.12.1)"
+    //"Ruby (Ruby 2.3.3)",
+    //"NODEJS (Node 7.4.0)",
+    //"GO (GO 1.7.4)",
+    //"BASH (Bash 4.4.5)",
+    //"RUST (Rust 1.14.0)"
   ];
+  const langCode=['C','Cpp14','Csharp','Cpp','Java','Perl','Php','Python','Python3','Scala']
   const { container } = props;
   const classes = useStyles();
   const theme = useTheme();
@@ -113,8 +115,9 @@ function ResponsiveDrawer(props) {
   const [input, setInput] = React.useState(initInput);
   const [output, setOutput] = React.useState(initOutput);
   const [inputAllowed , setInputPermission] = React.useState(false);
-  const url = 'https://www.codechef.com/api/ide/run/all';
-  const langCode=[11,44,27,10,3,29,4,116,39,17,56,114,28,93];
+  //const url = 'https://www.codechef.com/api/ide/run/all';
+  const url = 'https://ide.geeksforgeeks.org/main.php';
+  //const langCode=[11,44,27,10,3,29,4,116,39,17,56,114,28,93];
   const [curLang , setCurLang] = React.useState(initcurLang);
   const [helperOut , changeHelperOut] = React.useState(inithelper);
   const [shared,setShared] = React.useState("");
@@ -279,13 +282,17 @@ function CustomizedProgressBars() {
           method: 'POST',
           url: 'https://cors-grayhat.herokuapp.com/'+url,
           headers : {
-            'Origin': 'https://www.codechef.com'
+            'Origin': 'https://ide.geeksforgeeks.org'
           },
           form:
           {
-            sourceCode: tcode,
-              language: langCode[curLang],
-              input: tinput
+              //sourceCode: tcode,
+              //language: langCode[curLang],
+              //input: tinput
+              lang : langCode[curLang],
+              code : tcode,
+              input : tinput,
+              save : false
           }
       };
       request(options, (error, response, body)=> {
@@ -294,7 +301,34 @@ function CustomizedProgressBars() {
         setLoading(false);
       return;} ;
         var resp=JSON.parse(body);
-        var timestamp=resp.timestamp;
+        var meta = {
+          cmpError : resp.cmpError,
+          compResult : resp.compResult,
+          lxcOutput : resp.lxcOutput,
+          memory : resp.memory,
+          output : resp.output,
+          rntError : resp.rntError,
+          time : resp.time,
+          valid : resp.valid
+        };
+        var outPut="";
+        if(meta.cmpError!="")
+        {
+          outPut="Compile Time Error : "+meta.cmpError+"\n\n";
+        }
+        if(meta.rntError!="")
+        {
+          outPut+="Run Time Error : "+meta.rntError+"\n\n";
+        }
+        var help="";
+        help+="TIME TAKEN : "+meta.time+" sec , ";
+        help+="MEMORY USED : "+meta.memory+" MB \n";
+        outPut+=meta.output;
+        setLoading(false);
+        changeHelperOut(help);
+        setOutput(outPut);
+        setInput(tinput);
+        /*var timestamp=resp.timestamp;
         var cond=false;
         var codeCompile;
         function FetchCode()
@@ -349,7 +383,7 @@ function CustomizedProgressBars() {
           }
         });
       }
-      codeCompile = setInterval(FetchCode,2000);
+      codeCompile = setInterval(FetchCode,2000);*/
     });
       }
       function handleShare()
